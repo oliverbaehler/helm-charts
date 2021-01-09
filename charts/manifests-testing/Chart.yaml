@@ -2,7 +2,7 @@ apiVersion: v2
 name: manifests-testing
 description: Pure Unit Testing for the Bedag Manifests Chart
 type: application
-version: 2.0.0
+version: 1.0.0
 appVersion: 0.0.0
 home: none
 maintainers:
