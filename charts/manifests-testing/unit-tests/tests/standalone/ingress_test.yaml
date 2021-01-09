@@ -1,0 +1,439 @@
+suite: Test Ingress Manifest
+templates:
+  - standalone.yaml
+capabilities:
+  majorVersion: 1
+  minorVersion: 14
+tests:
+
+##
+## Passing Test Scenarios
+##
+
+  ##
+  ## Ingress Disabled
+  - it: Disable Ingress
+    set:
+      unit:
+        ingress:
+          values:
+            enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  ##
+  ## Empty Hosts
+  - it: Empty Hosts (Required field)
+    set:
+      unit:
+        ingress:
+          values:
+            enabled: true
+            hosts: []
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  ##
+  ## Set all available Values (Check Defaults)
+  - it: Set all Values (Non Specific Service)
+    set:
+      unit:
+        ingress:
+          values:
+            enabled: true
+            apiVersion: "networking.k8s.io/v1beta1"
+            ingressClass: "zone-class"
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+            hosts:
+              - host: "simple.host"
+                paths:
+                  - "/"
+            labels:
+              "test.label/1": "someLabel/1"
+              "test.label/2": "someLabel/2"
+            annotations:
+              "nginx.ingress.kubernetes.io/canary": "true"
+              "nginx.ingress.kubernetes.io/cors-allow-credentials": "true"
+    asserts:
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1beta1
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-library-testing"
+      - equal:
+          path: metadata.labels.[test.label/1]
+          value: "someLabel/1"
+      - equal:
+          path: metadata.labels.[test.label/2]
+          value: "someLabel/2"
+      - equal:
+          path: metadata.annotations.[nginx.ingress.kubernetes.io/canary]
+          value: "true"
+      - equal:
+          path: metadata.annotations.[nginx.ingress.kubernetes.io/cors-allow-credentials]
+          value: "true"
+      - isNull:
+          path: spec.ingressClassName
+      - equal:
+          path: spec.backend
+          value:
+            service:
+              name: backend
+              port:
+                number: 80
+      - contains:
+          path: spec.rules
+          content:
+            host: "simple.host"
+            http:
+              paths:
+                - path: /
+                  backend:
+                    serviceName: "RELEASE-NAME-library-testing"
+                    servicePort: "http"
+
+
+  ##
+  ## Test Host Paths and TLS
+  - it: Simple Host with TLS
+    set:
+      unit:
+        ingress:
+          values:
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+            hosts:
+              - host: "simple.host.ingress"
+                paths:
+                  - "/"
+            tls:
+              - secretName: "ingress-secret"
+                hosts:
+                  - "simple.host.ingress"
+    asserts:
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1beta1
+      - equal:
+          path: spec.backend
+          value:
+            service:
+              name: backend
+              port:
+                number: 80
+      - contains:
+          path: spec.tls
+          content:
+            secretName: "ingress-secret"
+            hosts:
+              - "simple.host.ingress"
+
+  ##
+  ## Test Multiple Host Paths and TLS
+  - it: Test advanced Host Paths
+    set:
+      unit:
+        ingress:
+          values:
+            hosts:
+              - host: "simple.host.ingress"
+                paths:
+                  - "/"
+                  - path: "/explicit"
+
+              - host: "complex.host.ingress"
+                paths:
+                  - path: "/service"
+                    serviceName: "headless-svc"
+                    servicePort: "8080"
+                  - path: "/resource"
+                    pathType: "ImplementationSpecific"
+                    resource:
+                      apiGroup: k8s.example.com
+                      kind: StorageBucket
+                      name: icon-assets
+            tls:
+              - secretName: "ingress-secret"
+                hosts:
+                  - "simple.host.ingress"
+              - hosts:
+                  - "complex.host.ingress"
+    asserts:
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1beta1
+      - contains:
+          path: spec.tls
+          content:
+            secretName: "ingress-secret"
+            hosts:
+              - "simple.host.ingress"
+      - contains:
+          path: spec.tls
+          content:
+            hosts:
+              - "complex.host.ingress"
+            secretName:
+      - equal:
+          path: spec.rules[0]
+          value:
+            host: "simple.host.ingress"
+            http:
+              paths:
+                - path: /
+                  backend:
+                    serviceName: RELEASE-NAME-library-testing
+                    servicePort: http
+                - path: /explicit
+                  backend:
+                    serviceName: RELEASE-NAME-library-testing
+                    servicePort: http
+      - equal:
+          path: spec.rules[1]
+          value:
+            host: "complex.host.ingress"
+            http:
+              paths:
+                - path: "/service"
+                  backend:
+                    serviceName: "headless-svc"
+                    servicePort: 8080
+                - path: "/resource"
+                  pathType: "ImplementationSpecific"
+                  backend:
+                    resource:
+                      apiGroup: k8s.example.com
+                      kind: StorageBucket
+                      name: icon-assets
+
+##
+## Common Values Integration
+##
+
+  ##
+  ## Common Partial Overwrite
+  - it: Common Name/Label Integration (Partial)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/partial.yaml
+    set:
+      unit:
+        ingress:
+          values:
+            enabled: true
+            hosts:
+              - host: "simple.host.ingress"
+                paths:
+                  - "/"
+            labels:
+              "test.label/1": "someLabel/1"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-partial"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+      - equal:
+          path: metadata.labels.[test.label/1]
+          value: "someLabel/1"
+      - contains:
+          path: spec.rules
+          content:
+            host: "simple.host.ingress"
+            http:
+              paths:
+                - path: /
+                  backend:
+                    serviceName: RELEASE-NAME-partial
+                    servicePort: http
+
+  ##
+  ## Common Full Overwrite
+  - it: Common Name/Label Integration (Overwrite)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/overwrite.yaml
+    set:
+      unit:
+        ingress:
+          values:
+            enabled: true
+            hosts:
+              - host: "simple.host.ingress"
+                paths:
+                  - "/"
+            labels:
+              "test.label/1": "someLabel/1"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "full"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+      - equal:
+          path: metadata.labels.[test.label/1]
+          value: "someLabel/1"
+      - contains:
+          path: spec.rules
+          content:
+            host: "simple.host.ingress"
+            http:
+              paths:
+                - path: /
+                  backend:
+                    serviceName: full
+                    servicePort: http
+
+
+##
+## Version based Test Scenarios
+##
+
+  ##
+  ## Kubernetes 1.18.0 API Changes
+  - it: Kubernetes 1.18.0 compatible ingress
+    capabilities:
+      majorVersion: 1
+      minorVersion: 18
+    set:
+      unit:
+        ingress:
+          values:
+            ingressClass: "zone-class"
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8080
+            hosts:
+              - host: "simple.host.ingress"
+                paths:
+                  - "/"
+                  - path: "/service"
+                    serviceName: "headless-svc"
+                    servicePort: 80
+                  - path: "/endpoint"
+                    serviceName: "endpoint"
+                    servicePort: "broadcast"
+    asserts:
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - equal:
+          path: spec.backend
+          value:
+            service:
+              name: backend
+              port:
+                number: 8080
+      - equal:
+          path: spec.ingressClassName
+          value: "zone-class"
+      - equal:
+          path: spec.rules[0]
+          value:
+            host: "simple.host.ingress"
+            http:
+              paths:
+                - path: "/"
+                  backend:
+                    service:
+                      name: "RELEASE-NAME-library-testing"
+                      port:
+                        name: "http"
+                - path: "/service"
+                  backend:
+                    service:
+                      name: "headless-svc"
+                      port:
+                        number: 80
+                - path: "/endpoint"
+                  backend:
+                    service:
+                      name: "endpoint"
+                      port:
+                        name: "broadcast"
+
+
+
+  ##
+  ## Kubernetes 1.19.0 API Changes
+  - it: Kubernetes 1.19.0 compatible ingress
+    capabilities:
+      majorVersion: 1
+      minorVersion: 19
+    set:
+      unit:
+        ingress:
+          values:
+            ingressClass: "zone-class"
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8080
+            hosts:
+              - host: "simple.host.ingress"
+                paths:
+                  - "/"
+                  - path: "/service"
+                    serviceName: "headless-svc"
+                    servicePort: 80
+                  - path: "/endpoint"
+                    serviceName: "endpoint"
+                    servicePort: "broadcast"
+    asserts:
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - equal:
+          path: spec.backend
+          value:
+            service:
+              name: backend
+              port:
+                number: 8080
+      - equal:
+          path: spec.ingressClassName
+          value: "zone-class"
+      - equal:
+          path: spec.rules[0]
+          value:
+            host: "simple.host.ingress"
+            http:
+              paths:
+                - path: "/"
+                  backend:
+                    service:
+                      name: "RELEASE-NAME-library-testing"
+                      port:
+                        name: "http"
+                - path: "/service"
+                  backend:
+                    service:
+                      name: "headless-svc"
+                      port:
+                        number: 80
+                - path: "/endpoint"
+                  backend:
+                    service:
+                      name: "endpoint"
+                      port:
+                        name: "broadcast"

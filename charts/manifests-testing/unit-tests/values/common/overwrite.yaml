@@ -1,0 +1,12 @@
+##
+## Example Common Values for Unit-Testing
+## These Values don't perform an actual overwrite but result in a different result than
+## other common values. Therefor they are split into two files.
+## -> These are example values and shouldn't be used for deployments
+##
+fullnameOverride: "full"
+commonLabels:
+  "my.custom.label": "my-custom-values"
+overwriteLabels:
+  "overwrite/1": "overwriteLabel"
+  "overwrite/2": "overwriteLabel"

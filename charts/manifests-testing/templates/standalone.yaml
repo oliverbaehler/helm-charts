@@ -1,0 +1,24 @@
+{{- if .Values.unit }}
+
+  {{/* ServiceAccount */}}
+  {{- if .Values.unit.serviceAccount }}
+    {{- include "bedag-lib.manifest.serviceAccount" (dict "serviceAccount" .Values.unit.serviceAccount.values "overwrites" (default .Values.unit.serviceAccount.overwrites) "context" $) | nindent 0 }}
+  {{- end }}
+
+  {{/* Service */}}
+  {{- if .Values.unit.service }}
+    {{- include "bedag-lib.manifest.service" (dict "service" .Values.unit.service.values "overwrites" (default .Values.unit.service.overwrites) "context" $) | nindent 0 }}
+  {{- end }}
+
+  {{/* Ingress */}}
+  {{- if .Values.unit.ingress }}
+    {{- include "bedag-lib.manifest.ingress" (dict "ingress" .Values.unit.ingress.values "overwrites" (default .Values.unit.ingress.overwrites) "context" $) | nindent 0 }}
+  {{- end }}
+
+  {{/* PodDisruptionBudget */}}
+  {{- if .Values.unit.podDisruptionBudget }}
+    {{- include "bedag-lib.manifest.podDisruptionBudget" (dict "podDisruptionBudget" .Values.unit.podDisruptionBudget.values "overwrites" (default .Values.unit.podDisruptionBudget.overwrites) "context" $) | nindent 0 }}
+  {{- end }}
+
+
+{{- end }}

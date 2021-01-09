@@ -1,0 +1,11 @@
+##
+## Example Global Values for Unit-Testing
+## -> These are example values and shouldn't be used for deployments
+##
+global:
+  imageRegistry: "company-registry.example.com"
+  pullPolicy: "Always"
+  storageClass: "nfs-local-class"
+  imagePullSecrets:
+    - name: private-registry
+    - name: private-registry-group

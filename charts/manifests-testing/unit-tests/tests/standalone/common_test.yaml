@@ -1,0 +1,229 @@
+##
+## Anchors
+anchors:
+  values:
+    labels: &labelValues
+      "test.label/1": "someLabel/1"
+      "test.label/2": "someLabel/2"
+    annotations: &annotationValues
+      test: me
+    selector: &selectorValues
+    test: me
+
+  asserts:
+    partial: &partial
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-partial"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+
+
+
+
+
+    labels: &labelAsserts
+      - equal:
+          path: metadata.labels.[overwrite/1]
+          value: "overwriteLabel"
+      - equal:
+          path: metadata.labels.[overwrite/2]
+          value: "overwriteLabel"
+    annotations: &annotationAsserts
+      test: me
+
+    selector: &selectorAsserts
+      - equal:
+          path: spec.selector.[app.kubernetes.io/name]
+          value: "partial"
+      - equal:
+          path: spec.selector.[app.kubernetes.io/instance]
+          value: "RELEASE-NAME"
+
+
+##
+## Test Suite
+suite: Test Common Overwrite Values
+templates:
+  - standalone.yaml
+values:
+  - ../../values/globals.yaml
+  - ../../values/common/all.yaml
+tests:
+
+
+##
+## Common Tests: Ingress
+##
+  - it: Ingress Common Partial
+    values:
+      - ../../values/common/partial.yaml
+    set:
+      unit:
+        ingress:
+          values:
+            enabled: true
+            labels: *labelValues
+    asserts: *partial
+
+
+
+
+
+##
+## Common Values Integration
+##
+
+  ##
+  ## Common Partial Overwrite
+  - it: Common Name/Label Integration (Partial)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/partial.yaml
+
+    set:
+      unit:
+        service:
+          values:
+            enabled: true
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-partial"
+      - equal:
+          path: spec.selector.[app.kubernetes.io/name]
+          value: "partial"
+      - equal:
+          path: spec.selector.[app.kubernetes.io/instance]
+          value: "RELEASE-NAME"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+
+  ##
+  ## Common Full Overwrite
+  - it: Common Name/Label Integration (Overwrite)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/overwrite.yaml
+      - ../../values/globals.yaml
+    set:
+      unit:
+        service:
+          values:
+            enabled: true
+            labels:
+              "test.label/1": "someLabel/1"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "full"
+      - equal:
+          path: spec.selector.[app.kubernetes.io/name]
+          value: "library-testing"
+      - equal:
+          path: spec.selector.[app.kubernetes.io/instance]
+          value: "RELEASE-NAME"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+      - equal:
+          path: metadata.labels.[test.label/1]
+          value: "someLabel/1"
+      - equal:
+          path: metadata.labels.[overwrite/1]
+          value: "overwriteLabel"
+      - equal:
+          path: metadata.labels.[overwrite/2]
+          value: "overwriteLabel"
+
+  ##
+  ## Common Full Overwrite
+  - it: Common Name/Label/Selector Integration (Overwrite)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/overwrite.yaml
+      - ../../values/common/selector.yaml
+      - ../../values/globals.yaml
+    set:
+      unit:
+        service:
+          values:
+            enabled: true
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "full"
+      - equal:
+          path: spec.selector.[my.custom.selector]
+          value: "selector"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+
+
+
+
+##
+## Common Tests: ServiceAccount
+##
+
+
+
+## Common Values Integration
+##
+
+  ##
+  ## Common Partial Overwrite
+  - it: Common Name/Label Integration (Partial)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/partial.yaml
+    set:
+      unit:
+        serviceAccount:
+          values:
+            enabled: true
+            labels:
+              "test.label/1": "someLabel/1"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-partial"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+      - equal:
+          path: metadata.labels.[test.label/1]
+          value: "someLabel/1"
+
+  ##
+  ## Common Full Overwrite
+  - it: Common Name/Label Integration (Overwrite)
+    values:
+      - ../../values/common/all.yaml
+      - ../../values/common/overwrite.yaml
+    set:
+      unit:
+        serviceAccount:
+          values:
+            enabled: true
+            labels:
+              "test.label/1": "someLabel/1"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "full"
+      - equal:
+          path: metadata.labels.[my.custom.label]
+          value: "my-custom-values"
+      - equal:
+          path: metadata.labels.[test.label/1]
+          value: "someLabel/1"
+      - equal:
+          path: metadata.labels.[overwrite/1]
+          value: "overwriteLabel"
+      - equal:
+          path: metadata.labels.[overwrite/2]
+          value: "overwriteLabel"

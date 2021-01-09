@@ -1,0 +1,20 @@
+#global:
+#  imagePullSecrets:
+#    - name: private-registry
+#    - name: private-registry-group
+#fullnameOverride: "full"
+#nameOverride: "test2"
+#commonLabels:
+#  "my.custom.label": "my-custom-values"
+#overwriteLabels:
+#  "overwritten": "labels"
+#  "include": "commonLabels"
+unit:
+  podDisruptionBudget:
+    values:
+      enabled: true
+      apiVersion: ""
+      labels: {}
+      selectorLabels: {}
+      minAvailable:
+      maxUnavailable:

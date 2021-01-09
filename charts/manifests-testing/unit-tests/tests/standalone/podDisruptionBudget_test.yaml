@@ -1,0 +1,77 @@
+##
+## -- Anchors
+anchors: {}
+
+
+
+##
+## -- Tests
+suite: Test PodDisruptionBudget Manifest
+templates:
+  - standalone.yaml
+tests:
+
+##
+## Passing Test Scenarios
+##
+
+  ##
+  ## PodDisruptionBudget Disabled
+  - it: Disable podDisruptionBudget
+    set:
+      unit:
+        podDisruptionBudget:
+          values:
+            enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  ##
+  ## Set all available Values (Check Defaults)
+  - it: Set all PodDisruptionBudget Values (Non Specific Service)
+    set:
+      unit:
+        podDisruptionBudget:
+          values:
+            enabled: true
+            apiVersion: "v1beta1"
+            labels: {}
+            selectorLabels: {}
+            minAvailable: 1
+            maxUnavailable: 2
+    asserts:
+      - isKind:
+          of: PodDisruptionBudget
+      - isAPIVersion:
+          of: v1beta1
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-library-testing"
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - equal:
+          path: spec.maxUnavailable
+          value: 2
+
+
+  ##
+  ## Minimal Configuration
+  - it: Test Minimal PodDisruptionBudget Configuration
+    set:
+      unit:
+        podDisruptionBudget:
+          values:
+            enabled: true
+    asserts:
+      - isKind:
+          of: PodDisruptionBudget
+      - isAPIVersion:
+          of: policy/v1beta1
+      - equal:
+          path: metadata.name
+          value: "RELEASE-NAME-library-testing"
+      - equal:
+          path: spec.minAvailable
+          value: 1

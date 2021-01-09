@@ -1,0 +1,18 @@
+##
+## Example Common Values for Unit-Testing
+## These are used in combination with append.yaml oder overwrite.yaml values
+## -> These are example values and shouldn't be used for deployments
+##
+proxy:
+  httpProxy:
+    host: "company-proxy.example.com"
+    port: "8080"
+    protocol: "http"
+  httpsProxy:
+    host: "company-proxy-secure.example.com"
+    port: "8080"
+    protocol: "https"
+  noProxy:
+    - "localhost"
+    - "127.0.0.1"
+    - "*.example.com"
