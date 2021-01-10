@@ -41,6 +41,8 @@ limitations under the License.
           {{- end -}}
         {{- end -}}
       {{- end -}}
-    {{- end -}}
+    {{- else }}
+      {{- fail "Your Bundle is not yaml" }}
+    {{- end }}
   {{- end -}}
 {{- end -}}
