@@ -5,13 +5,13 @@ entries:
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/prerelease: "true"
     apiVersion: v2
-    created: "2021-01-08T16:44:48.351716336Z"
+    created: "2021-01-10T13:24:10.665074863Z"
     dependencies:
     - name: library
       repository: https://buttahtoast.github.io/helm-charts/
       version: ~0.3.0
     description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
-    digest: 42bf3d13973642268bb52b4b7260ae13f2a0dffb35ef18a163b6dbedc3685603
+    digest: 3005ffc7aead78301520d5c1a8bc84b6d28a3fd2c41eb52a032e15f3ae789913
     icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
     keywords:
     - Bedag
@@ -25,102 +25,6 @@ entries:
     name: manifests
     type: library
     urls:
-    - https://github.com/bedag/helm-charts/releases/download/manifests-0.3.0/manifests-0.3.0.tgz
-    version: 0.3.0
-  - annotations:
-      artifacthub.io/containsSecurityUpdates: "false"
-      artifacthub.io/prerelease: "true"
-    apiVersion: v2
-    created: "2021-01-05T10:17:09.834505376Z"
-    dependencies:
-    - name: library
-      repository: https://buttahtoast.github.io/helm-charts/
-      version: ~0.3.0
-    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
-    digest: 6f19a86f4421dc26f466eae5cc52cc4c4c79d72dc73b1356fb7dda32ccf12522
-    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
-    keywords:
-    - Bedag
-    - Manifests
-    - Library
-    maintainers:
-    - email: oliver.baehler@bedag.ch
-      name: oliverbaehler
-    - email: sre@bedag.ch
-      name: SRE
-    name: manifests
-    type: library
-    urls:
-    - https://github.com/bedag/helm-charts/releases/download/manifests-0.2.0/manifests-0.2.0.tgz
-    version: 0.2.0
-  - annotations:
-      artifacthub.io/containsSecurityUpdates: "false"
-      artifacthub.io/prerelease: "true"
-    apiVersion: v2
-    created: "2020-12-24T15:08:20.625324553Z"
-    dependencies:
-    - name: library
-      repository: https://buttahtoast.github.io/helm-charts/
-      version: 0.2.0
-    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
-    digest: 651d06cfcd6d21e12a2cf4d36da1705b92961398491236de9a5bec5ff977cee3
-    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
-    keywords:
-    - Bedag
-    - Manifests
-    - Library
-    maintainers:
-    - email: oliver.baehler@bedag.ch
-      name: oliverbaehler
-    name: manifests
-    type: library
-    urls:
-    - https://github.com/bedag/helm-charts/releases/download/manifests-0.1.2/manifests-0.1.2.tgz
-    version: 0.1.2
-  - annotations:
-      artifacthub.io/containsSecurityUpdates: "false"
-      artifacthub.io/prerelease: "true"
-    apiVersion: v2
-    created: "2020-12-21T09:16:41.267835307Z"
-    dependencies:
-    - name: library
-      repository: https://buttahtoast.github.io/helm-charts/
-      version: 0.2.0
-    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
-    digest: e4948a62929791fea5bddc0d2edbda4645bb547c704292c757f3573d7cfa88f0
-    keywords:
-    - Bedag
-    - Manifests
-    - Library
-    maintainers:
-    - email: oliver.baehler@bedag.ch
-      name: oliverbaehler
-    name: manifests
-    type: library
-    urls:
-    - https://github.com/bedag/helm-charts/releases/download/manifests-0.1.1/manifests-0.1.1.tgz
-    version: 0.1.1
-  - annotations:
-      artifacthub.io/containsSecurityUpdates: "false"
-      artifacthub.io/prerelease: "true"
-    apiVersion: v2
-    created: "2020-12-17T16:10:46.756419811Z"
-    dependencies:
-    - name: library
-      repository: https://buttahtoast.github.io/helm-charts/
-      version: 0.2.0
-    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
-    digest: 681b0e7b36824f9cf5053d3756a8738d68d01a5d163c03f9950df2510cf5eb04
-    keywords:
-    - Bedag
-    - Manifests
-    - Library
-    maintainers:
-    - email: oliver.baehler@bedag.ch
-      name: oliverbaehler
-    name: manifests
-    type: library
-    urls:
-    - https://github.com/bedag/helm-charts/releases/download/manifests-0.1.0/manifests-0.1.0.tgz
-    version: 0.1.0
-generated: "2020-12-17T16:10:46.603299046Z"
+    - https://github.com/oliverbaehler/helm-charts/releases/download/manifests-0.3.1/manifests-0.3.1.tgz
+    version: 0.3.1
+generated: "2021-01-10T13:24:10.548872184Z"
