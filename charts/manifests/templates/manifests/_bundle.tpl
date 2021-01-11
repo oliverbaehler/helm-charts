@@ -42,7 +42,7 @@ limitations under the License.
         {{- end -}}
       {{- end -}}
     {{- else }}
-      {{- fail "Your Bundle is not yaml aaa" }}
+      {{- fail "Missing Keys or Wrong YAML structure!" }}
     {{- end }}
   {{- end -}}
 {{- end -}}
