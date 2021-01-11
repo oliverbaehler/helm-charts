@@ -3,39 +3,39 @@
 It's difficult to quickstart with this project unless you already have a deeper understanding. But we will show you how to set everything for a good experience with the manifests library. For better understanding check the entire documentation.
 
 1. **Get the Helm Manifests Plugin**</br>
-  The Helm Manifests Plugin will help you generate the correct vales for all the resources you are going to need. [Find it here](https://github.com/bedag/helm-manifests-plugin)
+    The Helm Manifests Plugin will help you generate the correct vales for all the resources you are going to   need. [Find it here](https://github.com/bedag/helm-manifests-plugin)
 
 2. **Create a new Chart**</br>
-  You can do this by using helm. Tough we won't need a lot of files from the helm generated chart directory.
+    You can do this by using helm. Tough we won't need a lot of files from the helm generated chart directory.
 
-  Create the basic layout with the following command
+    Create the basic layout with the following command
 
-  ```
-  helm create new-chart
-  ```
+    ```
+    helm create new-chart
+    ```
 
-  That will create a new directory in your current location named `new-chart`. In there you will find the typical helm chart structure.
+    That will create a new directory in your current location named `new-chart`. In there you will find the     typical helm chart structure.
 
 3. **Prepare Chart**</br>
-  As mentioned, we don't need any of the helm default files, so we are going to remove them.
+    As mentioned, we don't need any of the helm default files, so we are going to remove them.
 
-  ```
-  rm -rf new-chart/templates/* && rm -f new-chart/values.yaml
-  ```
+    ```
+    rm -rf new-chart/templates/* && rm -f new-chart/values.yaml
+    ```
 
 4. **Add Dependency**</br>
-  Now let's add the Manifests library as dependency to your new chart. In your `new-chart/Chart.yaml` file:
+    Now let's add the Manifests library as dependency to your new chart. In your `new-chart/Chart.yaml` file:
 
-  ```
-  ...
-  dependencies:
-   - name: manifests
-     version: "~0.4.0"
-     repository: https://bedag.github.io/helm-charts
-  ...
-  ```
+    ```
+    ...
+    dependencies:
+     - name: manifests
+       version: "~0.4.0"
+       repository: https://bedag.github.io/helm-charts
+    ...
+    ```
 
-  We like to have our dependencies fixed over all bugfix versions of a minor release (which is implied by `~`). Use your prefered dependency strategie.
+    We like to have our dependencies fixed over all bugfix versions of a minor release (which is implied by `~`).   Use your prefered dependency strategie.
 
 5. **Initialize Bundle**</br>
     Now it's time to get started with actually using the Manifests library. Let's create a new file `new-charts/templates/bundle.yaml` and add the basic Bundle structure ([Read More on Bundles](./manifests/README.md#bundles)). Let's also add our first bundle resource of type `statefulset`
