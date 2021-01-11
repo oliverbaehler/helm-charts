@@ -39,6 +39,12 @@ Major Changes to functions are documented with the version affected. **Before up
 | :----------- | :---------------- | :--------------------- | :-------------- |
 |||||
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://buttahtoast.github.io/helm-charts/ | library | ~0.3.0 |
+
 # Documentation
 
 For Artifacthub Users: The entire documentation can be found in the GitHub Repository.
@@ -55,18 +61,4 @@ We recommend looking thirst through the **Kubernetes Manifests** section.
 
 ## Quickstart
 
-It's difficult to quickstart with this project unless you already have a deeper understanding. But we will show you how to set everything for a good experience with the manifests library. For better understanding check the entire documentation.
-
-1. **Get the Helm Manifests Plugin**
-  The Helm Manifests Plugin will help you generate the correct vales for all the resources you are going to need. [Find it here](https://github.com/bedag/helm-manifests-plugin)
-
-2. **Create a new Chart Directory**
-  You can do this by using helm. Tough we won't need a lot of files from the helm generated chart directory.
-
-  Create the
-
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| https://buttahtoast.github.io/helm-charts/ | library | ~0.3.0 |
+[See this page for a quickstart](./templates/Quickstart.md)
