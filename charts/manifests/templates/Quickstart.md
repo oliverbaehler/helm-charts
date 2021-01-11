@@ -102,7 +102,7 @@ It's difficult to quickstart with this project unless you already have a deeper 
 
      * [http://masterminds.github.io/sprig/](http://masterminds.github.io/sprig/)
 
- 2. Just overwrite what's necessary. We want to give each end user of our charts as much freedom as possible. You should always consider a user's inputs. This is mainly required for slice inputs, since maps are merged. With slices, entire lists are overwritten.
+   2. Just overwrite what's necessary. We want to give each end user of our charts as much freedom as possible. You should always consider a user's inputs. This is mainly required for slice inputs, since maps are merged. With slices, entire lists are overwritten.
 
     ```
     {{- include "bedag-lib.manifest.bundle" (dict "bundle" (fromYaml (include "new-chart.bundle" $)) "context" $) | nindent 0 }}
@@ -127,7 +127,7 @@ It's difficult to quickstart with this project unless you already have a deeper 
     ```
     Eventough we are overwriting the port, we are still using the ports the user might input.
 
- 3. ExtraResources are always welcome :)
+   3. ExtraResources are always welcome :)
 
     ```
     {{- define "new-chart.bundle" -}}
@@ -144,9 +144,8 @@ It's difficult to quickstart with this project unless you already have a deeper 
     {{- end -}}
     ```
 
- 4. Sometimes you might encounter errors. Most of the time the source of errors will be a mallformed bundle YAML. To check how your YAML looks, you can do something like this and then `helm template` it:
+   4. Sometimes you might encounter errors. Most of the time the source of errors will be a mallformed bundle YAML. To check how your YAML looks, you can do something like this and then `helm template` it:
 
     ```
    test: | {{- include "bedag-lib.manifest.bundle" (dict "bundle" (fromYaml (include "new-chart.bundle" $)) "context" $) | nindent 2 }}
-    ...
     ```
