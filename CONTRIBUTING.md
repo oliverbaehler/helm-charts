@@ -7,8 +7,8 @@ We'd love to accept your patches and contributions to this project. There are ju
 With these steps you can make a contribution:
 
   1. Fork this repository, develop and test your changes on that fork
-  2. All commits correspond to the requirements (See [Commits](#commits))
-  3. Submit a pull request from your fork to this project.
+  2. Commit changes
+  3. Submit a [pull request](#pull-requests) from your fork to this project.
 
 Before starting, go through the requirements below.  
 
@@ -46,21 +46,21 @@ All submissions, including submissions by project members, require review. We us
 
 Your Pull Request has to fulfill the following points, to be considered:
 
-  * CI Job for chart linting must pass.
-  * CI Job for chart installation must pass.
-  * CI Job for chart dry-release must pass.
+  * Workflows must pass.
+  * DCO Check must pass.
+  * All commits correspond to the requirements (See [Commits](#commits))
   * The title of the PR starts with the chart name (e.g. `[chart_name] Additional options for SecurityContext`)
   * Changes to a chart require a version bump for that chart following [versioning conventions](#versioning).
   * New/Changed Configurations for the chart are documented in it's `README.md.gotmpl` file.
 
 ## Versioning
 
-Each chart's version follows the [semver standard](https://semver.org/). New charts should start at version `1.0.0`, if it's considered stable.
+Each chart's version follows the [semver standard](https://semver.org/). New charts should start at version `1.0.0`, if it's considered stable. If it's not considered stable, it must be released as [prerelease](#prerelease).
 
 Any breaking changes to a chart (backwards incompatible) require:
 
   * Bump of the current Major version of the chart
-  * State possible manual changes for this chart version in the `Upgrading` section of the chart's `README.md`
+  * State possible manual changes for this chart version in the `Upgrading` section of the chart's `README.md.gotmpl` ([See Upgrade](#upgrades))
 
 ### Immutability
 
@@ -149,6 +149,22 @@ In some cases they might not be required.
 
 ### Prerelease
 
+Annotation to mark chart release as prerelease:
+
+```
+annotations:
+  artifacthub.io/prerelease: "true"
+```
+
+### SecurityUpdates
+
+Annotation to mark that chart release contains security updates:
+
+```
+annotations:
+  artifacthub.io/containsSecurityUpdates: "true"
+```
+
 # Workflows
 
 The following Workflows are executed on named events.
@@ -163,7 +179,7 @@ On creating a Pull Request the following workflows will be executed:
 
   1. Chart Linting - All Charts are linted using the [ct tool](https://github.com/helm/chart-testing).
   2. Chart Installation - All Charts are installed to KinD isntance using the [ct tool](https://github.com/helm/chart-testing).
-  3. Chart Release Dry-Run - Only charts which had changes to their **Chart.yaml** file are considered for the Release Dry-Run. During the Dry-Run the following checks are made:
+  3. Chart Release Dry-Run - Only charts which had changes to their **Chart.yaml** file are considered for the Release Dry-Run. No Release will be made during Dry-Run. The following checks must pass:
     * Passed [Kube-Linter](https://github.com/stackrox/kube-linter) Tests (Required).
     * Passed [Helm Unit-Tests](https://github.com/quintush/helm-unittest) if any are defined (Optional).
 
