@@ -14,7 +14,7 @@ Before starting, go through the requirements below.
 
 ## Commits
 
-Please have meaningful commit messages :).
+Please have meaningful commit messages.
 
 ### Commit Signature Verification
 
@@ -80,7 +80,16 @@ There are certain requirements charts have to match, to be maintained in your He
 
 ## Manifests Library
 
-**Important**: All of the maintained charts in this repository should make use of the [Bedag Manifests Library](./charts/manifests). The might be exceptions.
+**Important**: All of the maintained charts in this repository should make use of the [Bedag Manifests Library](./charts/manifests). There might be exceptions.
+
+When adding the Bedag Manifests Library as dependency, we don't add it as local dependency (aka via `file://..`) since the library itself has dependencies, which are not included that way. Therefor you must declare the dependency from the repository itself:
+
+```
+dependencies:
+  - name: manifests
+    version: "~0.4.0"
+    repository: https://bedag.github.io/helm-charts/
+```
 
 ## Documentation
 
@@ -138,6 +147,8 @@ Since we release our charts on [Artifacthub](https://artifacthub.io/) we encoura
 
 In some cases they might not be required.
 
+### Prerelease
+
 # Workflows
 
 The following Workflows are executed on named events.
@@ -148,45 +159,20 @@ On each Push [Helm-Docs](#documentation) will executed (fails on protected branc
 
 ## Pull Requests
 
-On creating a Pull Request the following Workflows will be run:
+On creating a Pull Request the following workflows will be executed:
 
   1. Chart Linting - All Charts are linted using the [ct tool](https://github.com/helm/chart-testing).
   2. Chart Installation - All Charts are installed to KinD isntance using the [ct tool](https://github.com/helm/chart-testing).
   3. Chart Release Dry-Run - Only charts which had changes to their **Chart.yaml** file are considered for the Release Dry-Run. During the Dry-Run the following checks are made:
+    * Passed [Kube-Linter](https://github.com/stackrox/kube-linter) Tests (Required).
+    * Passed [Helm Unit-Tests](https://github.com/quintush/helm-unittest) if any are defined (Optional).
 
-    * Passes [Kube-Linter](https://github.com/stackrox/kube-linter) Tests (Required).
+  See which options are available on the [Github Release Action](https://github.com/buttahtoast/helm-release-action), which is used for releases.  
 
-    * Passes [Helm Unit-Tests](https://github.com/quintush/helm-unittest) if any are defined (Optional)
+## Release (Master Push)
 
-## Release (Master Push/Merge)
+On making a push on master the following workflows will be executed:
 
+  1. Chart Release - Only charts which had changes to their **Chart.yaml** file are considered for the Release.
 
-
-
-
-  1. Changes are automatically linted and tested using the [ct tool](https://github.com/helm/chart-testing) embedded as a GitHub action.
-  2. Review is done manually by Bedag Informatik AG team members.
-  3. Once review is done, the branch is merged into the master branch, where a Github action automatically creates a release on the GitHub repository. The new release is added to the index, laying in the gh-pages branch.
-
-
-## Release Action
-
-See which options are available on the [Github Release Action](https://github.com/buttahtoast/helm-release-action). We Use for publishing charts within this repository.
-
-### Kube Linter
-
-[Kube-Linter](https://github.com/stackrox/kube-linter) is supported for all charts and as global configuration. The Global configuration applies to all charts.
-
-### Unit Tests
-
-Unit Tests can be created on a chart basis. Unit Tests are optional.
-
-
-
-## Adding a new chart
-
-Currently these are the only requirements to add a new chart:
-
-  * **Only Helm Version 3+ Charts ([ApiVersion 2](https://helm.sh/docs/topics/v2_v3_migration/)) are accepted/supported.**
-  * The chart has it's on `README.md` describing it's configuration options with default values. The documentation should also cover  some basic configuration examples.
-  * Follow a best practice structure for the layout of the chart  directory (A good reference is [bitnami's blog](https://docs.bitnami.com/tutorials/production-ready-charts/) on this topic)
+See which options are available on the [Github Release Action](https://github.com/buttahtoast/helm-release-action), which is used for releases.
