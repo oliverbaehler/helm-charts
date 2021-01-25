@@ -3,6 +3,35 @@ entries:
   manifests:
   - annotations:
       artifacthub.io/changes: |
+        - "[Fixed]: Pod missing name in metadata"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/prerelease: "true"
+    apiVersion: v2
+    created: "2021-01-25T16:03:51.047151902Z"
+    dependencies:
+    - name: library
+      repository: https://buttahtoast.github.io/helm-charts/
+      version: ~0.3.0
+    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
+    digest: 76e193d0b9796a4ca0e878c3dc7e74fc15ce75dafa4580670218c536245cf465
+    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
+    keywords:
+    - Bedag
+    - Manifests
+    - Library
+    maintainers:
+    - email: sre@bedag.ch
+      name: SRE
+    name: manifests
+    sources:
+    - https://github.com/bedag/helm-charts/tree/master/charts/manifests
+    type: library
+    urls:
+    - https://github.com/oliverbaehler/helm-charts/releases/download/manifests-0.4.10/manifests-0.4.10.tgz
+    version: 0.4.10
+  - annotations:
+      artifacthub.io/changes: |
         - "[Fixes]: Pod twice kind declration & nindent"
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/license: Apache-2.0
