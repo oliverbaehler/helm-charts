@@ -333,6 +333,27 @@ entries:
   test:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2021-02-06T14:34:17.926235703Z"
+    description: A Helm chart for Kubernetes
+    digest: 1712767ea5b52d23c4407a4c0194705a23ce106f4bc1949bf6068f7d20d268e9
+    home: none
+    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
+    keywords:
+    - Bedag
+    - Manifests
+    - Library
+    maintainers:
+    - email: sre@bedag.ch
+      name: SRE
+    name: test
+    sources:
+    - https://github.com/bedag/helm-charts/tree/master/charts/manifests
+    type: application
+    urls:
+    - https://github.com/oliverbaehler/helm-charts/releases/download/test-0.2.0/test-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2021-02-06T14:31:52.997201531Z"
     description: A Helm chart for Kubernetes
     digest: 7822119d679f9ab575eda130d658980db21a555c18f51b1d99d187a036106f4b
