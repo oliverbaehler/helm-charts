@@ -46,7 +46,7 @@ Major Changes to functions are documented with the version affected. **Before up
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://buttahtoast.github.io/helm-charts/ | library | ~0.3.0 |
+| file://../../../helm-charts-buttahtoast/charts/library | library | ~0.3.0 |
 
 # Documentation
 
