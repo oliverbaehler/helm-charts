@@ -16,7 +16,8 @@ maintainers:
 dependencies:
 - name: "library"
   version: "~0.3.0"
-  repository: "https://buttahtoast.github.io/helm-charts/"
+  #repository: "https://buttahtoast.github.io/helm-charts/"
+  repository: "file://../../../helm-charts-buttahtoast/charts/library"
 annotations:
   artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/prerelease: "true"

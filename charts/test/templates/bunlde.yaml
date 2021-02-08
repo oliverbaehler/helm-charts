@@ -1,0 +1,5 @@
+{{- include "bedag-lib.manifest.bundle" (dict "bundle" (fromYaml (include "jira.bundle" $)) "context" $) | nindent 0 }}
+{{- define "jira.bundle" -}}
+resources:
+  - type: "cronjob"
+{{- end }}

@@ -22,7 +22,8 @@ limitations under the License.
 {{- define "bedag-lib.manifest.cronjob" -}}
   {{- if .context }}
     {{- $context := .context -}}
-    {{- $cronjob := (fromYaml (include "bedag-lib.manifest.cronjob.values" .)) -}}
+    {{- $cronjob := mergeOverwrite (fromYaml (include "bedag-lib.values.cronjob" $)).cronjob (default dict .values) (default dict .overwrites) -}}
+show: {{- toYaml $cronjob | nindent 2 }}
     {{- if $cronjob.enabled }}
 kind: CronJob
       {{- if $cronjob.apiVersion }}

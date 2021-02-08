@@ -1,0 +1,1 @@
+test: | {{ include "bedag-lib.manifest.cronjob" (dict "values" $.Values "fullname" "custom-cronjob" "context" $) | nindent 2 }}
