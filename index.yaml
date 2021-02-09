@@ -3,6 +3,38 @@ entries:
   manifests:
   - annotations:
       artifacthub.io/changes: |
+        - "[Added]: Support explicit chart.bundle template, for easier bundle declartion including documentation."
+        - "[Added]: Check were possible relevant YAML if it has any .Error field. Throw fail if detected."
+        - "[Fixed]: Handle empty Bundle Context causing Problems with Helm 3.5 (Function returned wrongly rendered YAML)"
+        - "[Removed]: Removed dedicated Values function for each manifest instead calling directly within the manifest"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/prerelease: "true"
+    apiVersion: v2
+    created: "2021-02-09T20:37:21.451519124Z"
+    dependencies:
+    - name: library
+      repository: https://buttahtoast.github.io/helm-charts/
+      version: ~0.3.0
+    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
+    digest: 21ab11b4b7bebcc7f54088ab20c61f8dbf17793af2202e486118c67255be54c1
+    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
+    keywords:
+    - Bedag
+    - Manifests
+    - Library
+    maintainers:
+    - email: sre@bedag.ch
+      name: SRE
+    name: manifests
+    sources:
+    - https://github.com/bedag/helm-charts/tree/master/charts/manifests
+    type: library
+    urls:
+    - https://github.com/oliverbaehler/helm-charts/releases/download/manifests-0.6.0/manifests-0.6.0.tgz
+    version: 0.6.0
+  - annotations:
+      artifacthub.io/changes: |
         - "[Fixed]: Pod missing name in metadata"
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/license: Apache-2.0
