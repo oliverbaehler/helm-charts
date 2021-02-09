@@ -16,10 +16,17 @@ A Helm chart for Kubernetes
 
 * <https://github.com/bedag/helm-charts/tree/master/charts/manifests>
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../manifests | manifests | >= 0.4.0 < 1.0.0 |
+
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| KAKAA | string | `"ADKLADWL A.aa DAd\n"` |  |
 | affinity | object | `{}` |  |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
