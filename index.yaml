@@ -35,6 +35,35 @@ entries:
     version: 0.6.0
   - annotations:
       artifacthub.io/changes: |
+        - "[Fixed]: Add Overwrites to Bundle Extras"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    created: "2021-02-18T13:22:35.24049931Z"
+    dependencies:
+    - name: library
+      repository: https://buttahtoast.github.io/helm-charts/
+      version: ~0.3.0
+    description: Bedag's Manifest chart. Library full of basic kubernetes manifests.
+    digest: 3df08b60f9f1f261949299b454bca82d6904b72eaa59e95f4c770d1d77e01496
+    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
+    keywords:
+    - Bedag
+    - Manifests
+    - Library
+    maintainers:
+    - email: sre@bedag.ch
+      name: SRE
+    name: manifests
+    sources:
+    - https://github.com/bedag/helm-charts/tree/master/charts/manifests
+    type: library
+    urls:
+    - https://github.com/oliverbaehler/helm-charts/releases/download/manifests-0.5.1/manifests-0.5.1.tgz
+    version: 0.5.1
+  - annotations:
+      artifacthub.io/changes: |
         - "[Fixed]: Pod missing name in metadata"
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/license: Apache-2.0
