@@ -449,6 +449,37 @@ entries:
     urls:
     - https://github.com/oliverbaehler/helm-charts/releases/download/manifests-0.3.1/manifests-0.3.1.tgz
     version: 0.3.1
+  raw:
+  - annotations:
+      artifacthub.io/changes: |
+        - "[Changed]: Don't merge templates with base (allows multiple items returned from template)"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 1.0.12
+    created: "2021-03-17T15:44:06.417319876Z"
+    dependencies:
+    - name: library
+      repository: https://buttahtoast.github.io/helm-charts/
+      version: ~0.3.0
+    description: Render raw kubernetes manifests managed by a helm release
+    digest: 788f9cfeb417e0e3a228c7164c01365142e2bd795b225b5fe41adcfc665a42a1
+    home: https://github.com/bedag/helm-charts/tree/master/charts/raw
+    icon: https://www.bedag.ch/wGlobal/wGlobal/layout/images/logo.svg
+    keywords:
+    - raw
+    - templates
+    - resources
+    maintainers:
+    - email: sre@bedag.ch
+      name: SRE
+    name: raw
+    sources:
+    - https://github.com/bedag/helm-charts/tree/master/charts/raw
+    type: application
+    urls:
+    - https://github.com/oliverbaehler/helm-charts/releases/download/raw-1.1.0/raw-1.1.0.tgz
+    version: 1.1.0
   test:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -492,4 +523,4 @@ entries:
     urls:
     - https://github.com/oliverbaehler/helm-charts/releases/download/test-0.1.0/test-0.1.0.tgz
     version: 0.1.0
-generated: "2021-01-10T13:24:10.548872184Z"
+generated: "2021-03-17T15:44:06.417417877Z"
