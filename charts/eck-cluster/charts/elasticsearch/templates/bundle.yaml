@@ -1,0 +1,100 @@
+
+test: |
+  {{ include "chart.bundle" $ | nindent 2 }}
+
+{{/*
+  {{- include "bedag-lib.manifest.bundle" $ | nindent 0 }}
+  Chart Bundle
+*/}}
+{{- define "chart.bundle" -}}
+common: {{- toYaml $.Values.global.common | nindent 2 }}
+  timezone: "TEST"
+resources:
+  - type: "raw"
+    manifest: | 
+      apiVersion: elasticsearch.k8s.elastic.co/{{ $.Values.global.cluster.apiVersion }}
+      kind: Elasticsearch
+      metadata:
+        name: {{ include "eck.name" $ }}
+        labels: {{ toYaml (merge (fromYaml (include "eck.labels" .)) (default dict $.Values.labels)) | nindent 10 }}
+        {{- with $.Values.annotations }}
+        annotations: {{ toYaml . | nindent 10 }}
+        {{- end -}}
+      spec:
+        version: {{ include "eck.version" $ }}
+        image: {{ include "lib.utils.globals.image" (dict "image" $.Values.image "context" $ "default" (include "eck.version" $)) }}
+        {{- if $.Values.secureSettings }}
+        secureSettings:
+          - secretName: {{ include "eck.name" $ }}-es-secret-settings
+        {{- end }}
+        {{- with $.Values.additionalSettings }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if $.Values.podDisruptionBudget }}
+        podDisruptionBudget:
+          spec:
+            {{- if $.Values.podDisruptionBudget.minAvailable }}
+            minAvailable: {{ $.Values.podDisruptionBudget.minAvailable }}
+            {{- else }}
+            maxUnavailable: {{ default 1 $.Values.podDisruptionBudget.maxUnavailable }}
+            {{- end }}
+            selector:
+              matchLabels:
+                elasticsearch.k8s.elastic.co/cluster-name: {{ include "eck.name" $ }}
+        {{- end }}
+        {{- if or $.Values.auth.roles $.Values.auth.fileRealm.users $.Values.auth.fileRealm.users_roles }}
+        auth:
+          {{- if and $.Values.auth.fileRealm.users $.Values.auth.fileRealm.users_roles }}
+          fileRealm:
+          - secretName: {{ include "eck.name" $ }}-auth-realm
+          {{- end }}
+          {{- if $.Values.auth.roles }}
+          roles:
+          - secretName: {{ include "eck.name" $ }}-auth-roles
+          {{- end -}}
+        {{- end }}
+        {{- if $.Values.updateStrategy }}
+        updateStrategy:
+          changeBudget:
+          {{- with $.Values.updateStrategy.maxSurge }}
+            maxSurge: {{ . }}
+          {{- end }}
+          {{- with $.Values.updateStrategy.maxUnavailable }}  
+            maxUnavailable: {{ . }}
+          {{- end }}  
+        {{- end }}
+        {{- if $.Values.nodeSets }}
+        nodeSets:
+          {{- range $.Values.nodeSets }}
+        - name: {{ required "Field .name required for nodeset" .name }}
+          count: {{ required "Field .count required for nodeset" .count }}
+          config: {{ include "es.config" (dict "config" .config "context" $) | nindent 12 }}
+          podTemplate: {{ include "bedag-lib.template.pod" (dict "pod" (fromYaml (include "es.podTemplate" (dict "node" . "context" $ ))) "context" $) | nindent 12 }}
+          {{- if .data.enabled }}
+          volumeClaimTemplates: {{ include "bedag-lib.template.persistentvolumeclaim" (dict "pvc" .data "context" $ "fullname"  "elasticsearch-data") | nindent 12 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}  
+  - type: "ingress"
+    values: {{- toYaml $.Values.ingress | nindent 6 }}
+    overwrites:
+      {{ if $.Values.ingress.backendHttps }}
+      annotations:
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      {{- end -}}
+      {{- if $.Values.ingress.url }}      
+      hosts:
+        - host: {{ $.Values.ingress.url }}
+          paths: 
+            - path: "/"
+              serviceName: {{ include "eck.name" $ }}-es-http
+              servicePort: 9200
+        {{- if $.Values.ingress.hosts }}
+          {{- toYaml $.Values.ingress.hosts }}
+        {{- end }}      
+      {{- end -}}
+{{- end -}}      
+
+
+
+

@@ -1,0 +1,816 @@
+
+## Common Labels
+# commonLabels -- Common Labels are added to each kubernetes resource manifest. But will not be added to resources rendered by the common chart (eg. JMX Exporter)
+commonLabels: {}
+
+## Overwrite Labels
+# overwriteLabels -- Overwrites default labels, but not resource specific labels and common labels
+overwriteLabels: {}
+
+#
+## Elasticsearch Configuration 
+
+## Labels 
+# labels -- Labels applied for the Elasticsearch CRD 
+labels: {}
+
+## Annotations
+# annotations -- Annotations applied for the Elasticsearch CRD 
+annotations: {}
+# Example from: https://github.com/elastic/cloud-on-k8s/blob/master/config/recipes/autoscaling/elasticsearch.yaml
+# elasticsearch.alpha.elastic.co/autoscaling-spec: |
+#   {
+#       "policies": [{
+#           "name": "sample-node",
+#           "roles": ["data", "ingest" , "transform", "master"],
+#           "deciders": {
+#             "proactive_storage": {
+#                 "forecast_window": "5m"
+#             }
+#           },
+#           "resources": {
+#               "nodeCount": { "min": 1, "max": 3 },
+#               "cpu": { "min": 2, "max": 8 },
+#               "memory": { "min": "2Gi", "max": "16Gi" },
+#               "storage": { "min": "64Gi", "max": "512Gi" }
+#           }
+#       }
+#   }
+
+
+## Docker Image for all Containers
+image:
+
+  # image.registry -- Configure Docker Registry. Will be overwritten if set by global variable.
+  registry: docker.elastic.co
+
+  # image.repository -- Configure Docker Repository
+  repository: elasticsearch/elasticsearch
+
+  # image.pullPolicy -- Configure Docker Pull Policy. Will be overwritten if set by global variable.
+  pullPolicy: ""
+
+  # image.tag -- Configure Docker Image tag
+  tag: ""
+
+
+## Cluster Configuration
+# config -- Elasticsearch Configuration which is merged with each nodeSets configuration
+config: {}
+# xpack.security.authc.realms:
+#   file.file1:
+#       order: 0
+# 
+#   native.native1:
+#       order: 1
+# 
+#   ldap.ldap1:
+#       order: 2
+#       enabled: false
+#       url: 'url_to_ldap1'
+#       ...
+# 
+#   ldap.ldap2:
+#       order: 3
+#       url: 'url_to_ldap2'
+#       ...
+# 
+#   active_directory.ad1:
+#       order: 4
+#       url: 'url_to_ad'
+
+## Elasticsearch Settings
+# additionalSettings -- If you can't find the field you want to define for the elasticsearch resource, you can insert it here (see values.yaml for exmaple)
+additionalSettings: {}
+#  http:
+#    tls:
+#      selfSignedCertificate:
+#        disabled: true
+#  transport: 
+#    service:
+#      metadata:
+#        labels:
+#          my-custom: label
+#      spec:
+#        type: LoadBalancer
+
+
+## Enabling fileRealm and defined roles
+auth:
+
+  # auth.fileRealm -- Define FileRealm Provider [Read More](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-users-and-roles.html#k8s_file_realm)
+  fileRealm: {}
+  #  users:
+  #  - name: admin
+  #    password: $2a$10$BBJ/ILiyJ1eBTYoRKxkqbuDEdYECplvxnqQ47uiowE7yGqvCEgj9W
+  #  - name: user
+  #    password: $2a$10$BBJ/ILiyJ1eBTYoRKxkqbuDEdYECplvxnqQ47uiowE7yasdfsdafK
+  #  users_roles:
+  #  - user: admin
+  #    role: rdeniro
+  #  - user: user
+  #    role: jacknich
+
+  # auth.roles -- Defined User Roles  [Read More](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-users-and-roles.html#k8s_creating_custom_roles)
+  roles: {}
+  #  click_admins:
+  #    run_as: [ 'clicks_watcher_1' ]
+  #    cluster: [ 'monitor' ]
+  #    indices:
+  #      - names: [ 'events-*' ]
+  #        privileges: [ 'read' ]
+  #        field_security:
+  #          grant: ['category', '@timestamp', 'message' ]
+  #        query: '{"match": {"category": "click"}}'
+
+#
+## Elasticsearch Secure Settings (Keystore) [Optional]
+# secureSettings -- Define secure Settings which are imported into the elasticsearch Keystore [Read More](https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-es-secure-settings.html)
+secureSettings: []
+#  - item: "keystore.key"
+#    value: "keystore.value"
+#  - item: "keystore.key2"
+#    value: "keystore.value"
+
+
+#
+## Elasticsearch UpdateStrategy [Optional]
+# updateStrategy -- [Reference](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-update-strategy.html)
+updateStrategy: {}
+#   maxSurge: -1
+#   maxUnavailable: 1
+
+
+#
+## Elasticsearch Plugins Installation
+# plugins -- [Reference](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-init-containers-plugin-downloads.html)
+plugins:
+
+  # plugins.enabled -- Enable Elasticsearch Plugin Installation
+  enabled: true
+
+  # plugins.install -- List of plugins which will be installed prior to elasticsearch being launched. [See Plugins](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-plugins.html)
+  install:
+    - "repository-s3"
+    # - "ingest-attachment"
+
+  ## Plugins Docker Image definition.
+  # plugins.image -- Image used to install plugins. Uses by default the value from `$.Values.image`. If you set a image on nodeSet basis this image will also used for the plugins. If you set the image here, it will have precendence over all the other definitions.
+  image:
+
+    # plugins.image.registry -- Configure Docker Registry. Will be overwritten if set by global variable.
+    registry: ""
+  
+    # plugins.image.repository -- Configure Docker Repository
+    repository: ""
+  
+    # plugins.image.pullPolicy -- Configure Docker Pull Policy. Will be overwritten if set by global variable.
+    pullPolicy: 
+  
+    # plugins.image.tag -- Configure Docker Image tag
+    # @default -- Tag defaults to `$.Values.image.tag`
+    tag: ""
+  
+  ## Container Resources
+  # plugins.resources -- Configure Container [Resource](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+  resources: 
+    {}
+  #  requests:
+  #    memory: "64Mi"
+  #    cpu: "250m"
+  #  limits:
+  #    memory: "128Mi"
+  #    cpu: "500m"
+  
+  ## Container Command
+  # plugins.command -- Configure executed container command
+  command: 
+    {}
+  
+  ## Container Command Args
+  # plugins.args -- Configure arguments for executed command
+  args: 
+    {}
+  
+  ## Environment Variables
+  # plugins.environment -- Configure Environment Variables (Refer to values.yaml)
+  environment: 
+    []
+  # - name: "MY_ENV"
+  #   value: "someValue"
+  #   secret: true
+  # - name: SOME_SPEC
+  #   valueFrom:
+  #     fieldRef:
+  #       fieldPath: spec.*
+  #
+  
+  ## Container Ports
+  # plugins.ports -- Configure Container Ports
+  ports: 
+    []
+  # - name: "health"
+  #   containerPort: 9090
+  #   protocol: TCP
+  
+  ## Additional Volume Mounts
+  # plugins.volumeMounts -- Configure Container [volumeMounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/)
+  volumeMounts: 
+    []
+  #  - name: "cache"
+  #    mountPath: /cache
+  #  - name: "share"
+  #    mountPath: /var/data/share
+  
+  ## Container SecurityContext
+  # plugins.securityContext -- Container [SecurityContext](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+  securityContext: 
+    {}
+  
+  ## ReadinessProbe Configuration
+  # plugins.readinessProbe -- Container [ReadinessProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-readiness-probes)
+  readinessProbe: 
+    {}
+  #  httpGet:
+  #    path: /health
+  #    port: http
+  #  initialDelaySeconds: 60
+  
+  ## LivenessProbe Configuration
+  # plugins.livenessProbe -- Container [LivenessProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command)
+  livenessProbe: 
+    {}
+  #  httpGet:
+  #    path: /health
+  #    port: http
+  #  initialDelaySeconds: 60
+  
+  ## StartupProbe Configuration
+  # plugins.startupProbe -- Container [StartupProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes)
+  startupProbe: 
+    {}
+  #  httpGet:
+  #    path: /health
+  #    port: http
+  #  failureThreshold: 30
+  #  periodSeconds: 10
+  
+  ## Container Lifecycle Hooks
+  # plugins.lifecycle -- Container [Lifecycle](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/)
+  lifecycle: 
+    {}
+  #  postStart:
+  #    exec:
+  #      command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+  
+  ## Container ExtraFields
+  # plugins.containerFields -- Extra fields used on the container definition
+  containerFields: 
+    {}
+  #  stdinOnce: true
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+#
+## Elasticsearch NodeSets [Required]
+# https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-pod-template.html
+#
+nodeSets:
+    
+    ## Define the Nodeset Name
+    # nodeSets[0].name -- Statefulset name for this nodeset [Required]
+  - name: "sample-node"
+
+    ## Define the amount of replicas for the Nodeset
+    # nodeSets[0].count -- Amount of replicas spawned by this nodeSet [Required]
+    count: 1
+    
+    ## Define additional labels for the nodeset
+    # nodeSets[0].labels -- Labels specific for this nodeSet[Optional]
+    labels:
+      zone: "hot"
+
+    ## Define additional annotations for the nodeset [Optional]
+    # nodeSets[0].annotations -- Annotations specific for this nodeSet [Optional]
+    annotations: {}
+
+    ## Node Sepcific Elasticsearch configuration
+    # nodeSets[0].config -- Elasticsearch Configuration for this nodeSet. Is merged over `$.Values.config`. [Read more](https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-node-configuration.html)
+    config:
+      node.roles:
+        - "master"
+        - "data"
+        - "ingest"
+        - "transform"
+
+    ## NodeSet Java Configuration
+    #
+    java:
+
+      ## JVM Minimal Heap
+      # nodeSets[0].java.xmx -- Define Java XMX Value (Xmx represents the maximum size of total heap space) [Required]
+      xmx: 512m
+
+      ## JVM Maximum Heap
+      # nodeSets[0].java.xms -- Define Java XMS Value (Xms represents the initial size of total heap space) [Required]
+      xms: 512m
+
+      ## Additional JVM Arguments 
+      # nodeSets[0].java.opts -- Define additional Java Options given to the `ES_JAVA_OPTS` environment variable [Optional]
+      opts: ""
+      # "-some.option"
+
+      ## Disable Proxy for JVM 
+      # nodeSets[0].java.proxy -- Enable proxy configuration via java arguments
+      proxy: true 
+
+ 
+    ## Data Directory
+    # Configure the volumeClaimTemplate used to provision the elasticsearch-data pvc.
+    data:
+
+      ## Enable Persistent Volume Claim
+      # nodeSets[0].data.enabled -- Enable PVC Resource
+      enabled: true
+      
+      ## Persistent Volume Claim Labels
+      # nodeSets[0].data.labels -- Merges given labels with common labels
+      labels: {}
+      
+      ## Persistent Volume Claim Annotations
+      # nodeSets[0].data.annotations -- Configure PVC additional Annotations ([Monitor Labels](https://www.weave.works/docs/cloud/latest/tasks/monitor/configuration-k8s/))
+      annotations: {}
+      
+      ## Persistent Volume Reference Name
+      # nodeSets[0].data.volumeName -- Persistent Volume Refference Name
+      volumeName: ""
+      
+      ## Persistent Volume Claim Requested Storage Size
+      # nodeSets[0].data.size -- Configure Persistent Volume Claim Storage Size
+      size: "10Gi"
+      
+      ## Persistent Volume Claim Access Modes
+      # nodeSets[0].data.accessModes -- Configure PVC [Access Modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+      accessModes: [ "ReadWriteOnce" ]
+      
+      ## Persistent Volume Claim Storage Class
+      # nodeSets[0].data.storageClass -- Configure PVC [Storage Class](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1)
+      storageClass: ""
+      
+      ## Persistent Volume Claim Selector
+      # nodeSets[0].data.selector -- Configure PVC [Selector](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector)
+      selector: {}
+      
+      ## Persistent Volume Claim Data Sources
+      # nodeSets[0].data.dataSource -- Data Sources are currently only supported for [CSI Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-snapshot-and-restore-volume-from-snapshot-support)
+      dataSource:
+      #  name: existing-src-pvc-name
+      #  kind: PersistentVolumeClaim
+
+    ## Pod API version
+    # nodeSets[0].apiVersion -- Configure the api version used for the Pod resource
+    apiVersion: ""
+    
+    ## Image Pull Secrets
+    # nodeSets[0].imagePullSecrets -- Define [ImagePullSecrets](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). Will be overwritten if set by global variable.
+    imagePullSecrets: []
+    
+    ## Pod ForceRedeploy
+    ## nodeSets[0].forceRedeploy -- Adds timestamp annotation, causing your pods to be redeployed everytime a new release applied.
+    forceRedeploy: false
+    
+    ## Extra Pod Fields
+    # nodeSets[0].podFields -- Add extra field to the [Pod Template](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#podtemplate-v1-core) if not available as value.
+    podFields: {}
+    #  hostNetwork: true
+    
+    ## Additional Kubernetes Volumes
+    # nodeSets[0].volumes -- Additional [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+    volumes: []
+    #  - name: cache
+    #    emptyDir: {}
+    #  - name: share
+    #    persistentVolumeClaim:
+    #      claimName: 'shared'
+    
+    ## RestartPolicy Configuration
+    # nodeSets[0].restartPolicy -- Restart policy for all containers within the pod. One of Always, OnFailure, Never. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
+    restartPolicy: 
+    
+    ## Affinity Configuration
+    # nodeSets[0].affinity -- Pod [Affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity)
+    affinity: {}
+    
+    ## NodeSelector Configuration
+    # nodeSets[0].nodeSelector -- Pod [NodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)
+    nodeSelector: {}
+    
+    ## Tolerations Configuration
+    # nodeSets[0].tolerations -- Pod [Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)
+    tolerations: {}
+    
+    ## Priority Configuration
+    # nodeSets[0].priorityClassName -- Pod [priorityClassName](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass)
+    priorityClassName: ""
+    
+    ## Pod SecurityContext Configuration
+    # nodeSets[0].podSecurityContext -- Pod [SecurityContext](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+    podSecurityContext: {}
+    
+    ## Pod Initcontainers
+    # nodeSets[0].initContainers -- Pod [initContainers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
+    initContainers: []
+    #  - name: init-myservice
+    #    image: busybox:1.28
+    #    command: ['sh', '-c', "until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+    
+    ## Pod SideCar Containers
+    # nodeSets[0].sidecars -- Allows to add sidecars to your [maincar]](https://kubernetes.io/docs/concepts/workloads/pods/#using-pods)
+    sidecars: []
+    
+    #
+    ## - ServiceAccount
+    ## Reference: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+    ## API Reference: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#serviceaccount-v1-core
+    ##
+    serviceAccount:
+    
+      ## ServiceAccount Creation
+      # nodeSets[0].serviceAccount.enabled -- Specifies whether a service account is enabled or not
+      enabled: false
+    
+      ## ServiceAccount Creation
+      # nodeSets[0].serviceAccount.create -- Specifies whether a service account should be created
+      create: false
+    
+      ## ServiceAccount API version
+      # nodeSets[0].serviceAccount.apiVersion -- Configure the api version used
+      # @default -- v1
+      apiVersion: ""
+    
+      ## ServiceAccount Labels
+      # nodeSets[0].serviceAccount.labels -- Merges given labels with common labels
+      labels: {}
+    
+      ## ServiceAccount Annotations
+      # nodeSets[0].serviceAccount.annotations -- Annotations to add to the service account
+      annotations: {}
+    
+      ## ServiceAccount Auto Mount Service Token
+      # nodeSets[0].serviceAccount.automountServiceAccountToken -- (bool) AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted.
+      automountServiceAccountToken: true
+    
+      ## ServiceAccount Image pull secrets
+      # nodeSets[0].serviceAccount.imagePullSecrets -- ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images in pods that reference this ServiceAccount.
+      imagePullSecrets: []
+    
+      ## ServiceAccount Global PullSecrets
+      # nodeSets[0].serviceAccount.globalPullSecrets -- Evaluate global set pullsecrets and mount, if set
+      globalPullSecrets: false
+    
+      ## ServiceAccount Secrets
+      # nodeSets[0].serviceAccount.secrets -- Secrets is the list of secrets allowed to be used by pods running using this ServiceAccount
+      secrets: []
+    
+      ## ServiceAccount Name
+      # nodeSets[0].serviceAccount.name -- If not set and create is true, a name is generated using the fullname template
+      name: ""
+    
+
+    ## Container Configuration
+    ## https://github.com/bedag/helm-charts/tree/master/charts/manifests/templates/manifests/README.md#container-template
+    ## Full Configuration
+    
+    ## Docker Image definition.
+    # Useful when you want to use a different docker image for a specific nodeSet
+    #
+    # image:
+    #
+    #   nodeSets[0].image.registry -- Configure Docker Registry. Will be overwritten if set by global variable.
+    #   registry: ""
+    #
+    #   nodeSets[0].image.repository -- Configure Docker Repository
+    #   repository: ""
+    #
+    #   nodeSets[0].image.pullPolicy -- Configure Docker Pull Policy. Will be overwritten if set by global variable.
+    #   pullPolicy: 
+    #
+    #   nodeSets[0].image.tag -- Configure Docker Image tag
+    #   @default -- Tag defaults to `.Chart.Appversion`, if not set
+    #   tag: 
+    
+    ## Container Resources
+    # nodeSets[0].resources -- Configure Container [Resource](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+    resources: 
+      {}
+    #  requests:
+    #    memory: "64Mi"
+    #    cpu: "250m"
+    #  limits:
+    #    memory: "128Mi"
+    #    cpu: "500m"
+    
+    ## Container Command
+    # nodeSets[0].command -- Configure executed container command
+    command: 
+      {}
+    
+    ## Container Command Args
+    # nodeSets[0].args -- Configure arguments for executed command
+    args: 
+      {}
+    
+    ## Environment Variables
+    # nodeSets[0].environment -- Configure Environment Variables (Refer to values.yaml)
+    environment: 
+      []
+    # - name: "MY_ENV"
+    #   value: "someValue"
+    #   secret: true
+    # - name: SOME_SPEC
+    #   valueFrom:
+    #     fieldRef:
+    #       fieldPath: spec.*
+    #
+    
+    ## Container Ports
+    # nodeSets[0].ports -- Configure Container Ports
+    ports: 
+      []
+    # - name: "health"
+    #   containerPort: 9090
+    #   protocol: TCP
+    
+    ## Additional Volume Mounts
+    # nodeSets[0].volumeMounts -- Configure Container [volumeMounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/)
+    volumeMounts: 
+      []
+    #  - name: "cache"
+    #    mountPath: /cache
+    #  - name: "share"
+    #    mountPath: /var/data/share
+    
+    ## Container SecurityContext
+    # nodeSets[0].securityContext -- Container [SecurityContext](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+    securityContext: 
+      {}
+    
+    ## ReadinessProbe Configuration
+    # nodeSets[0].readinessProbe -- Container [ReadinessProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-readiness-probes)
+    readinessProbe: 
+      {}
+    #  httpGet:
+    #    path: /health
+    #    port: http
+    #  initialDelaySeconds: 60
+    
+    ## LivenessProbe Configuration
+    # nodeSets[0].livenessProbe -- Container [LivenessProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command)
+    livenessProbe: 
+      {}
+    #  httpGet:
+    #    path: /health
+    #    port: http
+    #  initialDelaySeconds: 60
+    
+    ## StartupProbe Configuration
+    # nodeSets[0].startupProbe -- Container [StartupProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes)
+    startupProbe: 
+      {}
+    #  httpGet:
+    #    path: /health
+    #    port: http
+    #  failureThreshold: 30
+    #  periodSeconds: 10
+    
+    ## Container Lifecycle Hooks
+    # nodeSets[0].lifecycle -- Container [Lifecycle](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/)
+    lifecycle: 
+      {}
+    #  postStart:
+    #    exec:
+    #      command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+    
+    ## Container ExtraFields
+    # nodeSets[0].containerFields -- Extra fields used on the container definition
+    containerFields: 
+      {}
+    #  stdinOnce: true
+  
+  
+  
+  
+
+  - name: "sample-node-2"
+    count: 1
+    labels:
+      zone: "hot"
+    annotations:
+      annotation: "value"
+    nodeSelector:
+      failure-domain.beta.kubernetes.io/zone: "MSW"
+    config:
+      node.master: false
+      node.data: true
+      node.ingest: true
+      node.ml: true
+      node.remote_cluster_client: false
+    java:
+      xmx: 512m
+      xms: 512m
+      args: []
+    resources:
+      limits:
+        cpu: 250m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 1Gi
+    data:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+          requests:
+            storage: 10Gi
+      storageClassName: "msa-01"
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## - Ingress
+## Reference: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+
+  ## Enable Ingress
+  # ingress.enabled -- Enable Ingress Resource
+  enabled: false
+
+  url: "https://elastich"
+
+  ## Ingress API version
+  # ingress.apiVersion -- Configure the api version used for the ingress resource.
+  apiVersion: ""
+
+  ## Ingress Labels
+  # ingress.labels -- Configure Ingress additional Labels
+  labels: {}
+
+  ## Ingress Annotations
+  # ingress.annotations -- Configure Ingress Annotations
+  annotations: {}
+  #  kubernetes.io/ingress.class: nginx (Deprecated)
+  #  kubernetes.io/tls-acme: "true"
+
+  ## Use Https for Backend
+  # ingress.backendHttps -- Sets the `nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"` annotation
+  backendHttps: false
+
+  ## Ingress Default Class
+  # ingress.ingressClass -- Configure the [default ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class) for this ingress.
+  ingressClass: ""
+
+  ## Ingress HTTP Rules
+  # ingress.hosts -- Configure Ingress [Hosts](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules) (Required)
+  hosts: []
+
+  # ingress.hosts[0].host -- Ingress Hostname
+  #  - host: chart-example.local
+  #
+  # ingress.hosts[0].paths -- Ingress Paths
+  #    paths:
+  #
+  ## Path with service backend
+  #
+  # ingress.hosts[0].paths[0].path -- Ingress Path Context
+  #      - path: "/"
+  #
+  # ingress.hosts[0].paths[0].serviceName -- Ingress Path service backend name
+  # @default -- `bedag-lib.utils.common.fullname`
+  #        serviceName: ""
+  #
+  # ingress.hosts[0].paths[0].servicePort -- Ingress Path service backend port
+  # @default -- http
+  #        servicePort: ""
+  #
+  ## Path with resource backend
+  #
+  # ingress.hosts[0].paths[1].path -- Ingress Path Context
+  #      - path: "/storage"
+  #
+  # ingress.hosts[0].paths[1].pathType -- Ingress path [pathType](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types)
+  # @default -- Prefix
+  #        pathType: "ImplementationSpecific"
+  #
+  # ingress.hosts[0].paths[1].resource -- Ingress path resource backend
+  #        resource:
+  #          apiGroup: k8s.example.com
+  #          kind: StorageBucket
+  #          name: icon-assets
+  #
+  # ingress.hosts[0].paths[2].path -- Direct Ingress Path. Defaults to service backend.
+  #      - "/"
+  #
+
+  ## Ingress TLS Configuration
+  # ingress.tls -- Configure Ingress [TLS](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls)
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+  ## Custom Ingress Rules
+  # ingress.customRules -- Configure Custom Ingress [Rules](https://kubernetes.io/docs/concepts/services-networking/ingress/#resource-backend)
+  customRules: []
+  #  - http:
+  #      paths:
+  #        - path: /icons
+  #          pathType: ImplementationSpecific
+  #          backend:
+  #            resource:
+  #              apiGroup: k8s.example.com
+  #              kind: StorageBucket
+  #              name: icon-assets
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## KKL
+proxy:
+
+  ## HTTP Proxy Configuration
+  httpProxy:
+
+    ## HTTP Proxy Host Configuration
+    # proxy.httpProxy.host -- Configure HTTP Proxy Hostname/IP (without protocol://)
+    host: "blkabla"
+
+    ## HTTP Proxy Port Configuration
+    # proxy.httpProxy.port -- (int) Configure HTTP Proxy Port
+    port: 8080
+
+  ## HTTPS Proxy Configuration
+  httpsProxy:
+
+    ## HTTPS Proxy Host Configuration
+    # proxy.httpsProxy.host -- Configure HTTPS Proxy Hostname/IP (without protocol://)
+    host: ""
+
+    ## HTTP Proxy Port Configuration
+    # proxy.httpsProxy.port -- (int) Configure HTTPS Proxy Port
+    port:
+
+  ## No Proxy Hosts Configuration
+  # proxy.noProxy -- Configure No Proxy Hosts
+  noProxy: [ "localhost", "127.0.0.1" ]
