@@ -1,0 +1,20 @@
+name: elasticsearch
+description: Deploy ECK compatible elasticsearch resources
+type: application
+version: 1.0.0
+apiVersion: v2
+appVersion: 7.12.0
+keywords:
+- Elasticsearch
+- ECK
+home: https://github.com/elastic/cloud-on-k8s
+maintainers:
+- name: SRE
+  email: sre@bedag.ch
+sources:
+  - https://github.com/bedag/helm-charts/tree/master/charts/eck-cluster/charts/elasticsearch
+annotations:
+  artifacthub.io/containsSecurityUpdates: "false"
+  artifacthub.io/changes: |
+    - "[tbd]: Don't merge templates with base (allows multiple items returned from template)"
+  artifacthub.io/prerelease: "false"
